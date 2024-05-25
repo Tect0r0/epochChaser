@@ -50,15 +50,13 @@ public class Player : MonoBehaviour
             modern.SetActive(false);
             future.SetActive(true);
 
-            // Assign the ChangeEpoch method to the Time input
+            // Assign the ChangeEpoch method to the Time input  // "Hola como estas" -> "Hola" "como" "estas"
             input.actions["Time"].started += context =>
             {
                 string controlName = context.control.name; // Get the name of the control
-                char lastChar = controlName[controlName.Length - 1]; // Get the last character of the name [eg: 'Keyboard/1' -> '1']
+                char lastChar = controlName[controlName.Length - 1]; // Get the last character of the name [eg: 'Keyboard/1' -> '1'] -> "1"
 
-                float value;
-
-                if (float.TryParse(lastChar.ToString(), out value)) // Try to parse the last character as a float
+                if (float.TryParse(lastChar.ToString(), out float value)) // Try to parse the last character as a float
                 {
                     // Pass the value to the ChangeEpoch method
                     ChangeEpoch(value);
@@ -71,13 +69,14 @@ public class Player : MonoBehaviour
         input.actions["Pause"].started += _ => Pause();
 
         input.actions["Dash"].started += _ => HandleDash();
+
+        input.actions["Shoot"].started += _ => Shoot();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        direction2D = input.actions["Move"].ReadValue<Vector2>();
-        direction2D.Normalize();
+        direction2D = input.actions["Move"].ReadValue<Vector2>().normalized; // Vector2D de movimiento
 
         if (isDashing) { return; } // Check if the player is dashing (to avoid movement)
 
@@ -202,6 +201,11 @@ public class Player : MonoBehaviour
                 future.SetActive(true);
                 break;
         }
+    }
+
+    void Shoot()
+    {
+        Debug.Log("Pew pew");
     }
 
 }
