@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
         if (isGrounded)
         {
             isJumping = true;
+            isGrounded = false;
             rb.gravityScale = 3.0f;
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
