@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
     public GameObject playerSpawner; // GameObject del spawner
     public float movementSpeed, jumpForce, dashSpeed, dashDuration; // Velocidad de movimiento, fuerza de salto, velocidad del dash, duracion del dash
     private Vector2 newPosition, direction2D, lastCheckpoint; // Nueva posicion, direccion 2D, ultimo CP
-    public bool isJumping, isGrounded, isDashing, isRespawning = false; // Flags para movimiento
-    public bool canDoubleJump, canDash = false; // Flags de habilidades
+    public bool isJumping, isGrounded, isDashing, isRespawning, isCinematic = false; // Flags para movimiento
+    public bool canDoubleJump, canDash, canSwitch = false; // Flags de habilidades
     public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
 
     void Awake()
@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
 
         if (sceneName == "Futuristic") // Check for scene (only for last scene)
         {
+            canSwitch = true;
             dJump = true;
             dash = true;
             Debug.Log("Futuristic scene");
@@ -49,7 +50,7 @@ public class Player : MonoBehaviour
             modern.SetActive(false);
             future.SetActive(true);
 
-            // Assign the ChangeEpoch method to the Time input  // "Hola como estas" -> "Hola" "como" "estas"
+            // Assign the ChangeEpoch method to the Time input
             input.actions["Time"].started += context =>
             {
                 string controlName = context.control.name; // Get the name of the control
@@ -80,7 +81,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (isDashing || isRespawning) { return; } // Check if the player is dashing (to avoid movement)
+        if (isDashing || isRespawning || isCinematic) { return; } // Check if the player is dashing (to avoid movement)
         // Read player input
         direction2D = input.actions["Move"].ReadValue<Vector2>(); // Vector2D de movimiento
         // Move the character
@@ -89,7 +90,7 @@ public class Player : MonoBehaviour
 
     void HandleJump()
     {
-        if (isDashing || isRespawning) { return; } // Check if the player is dashing (to avoid jumping
+        if (isDashing || isRespawning || isCinematic) { return; } // Check if the player is dashing (to avoid jumping
 
         if (isGrounded || (dJump && canDoubleJump))
         { // Check if the player is grounded or has double jump
@@ -149,6 +150,12 @@ public class Player : MonoBehaviour
             lastCheckpoint = other.transform.position;
             Debug.Log("Checkpoint reached");
         }
+        if (other.gameObject.name == "SwitchTriggerOff")
+        {
+            Debug.Log("Switchn't");
+            ChangeEpoch(5);
+            canSwitch = false;
+        }
     }
 
     IEnumerator Respawn() // Coroutine for the respawn
@@ -161,7 +168,7 @@ public class Player : MonoBehaviour
 
     private void HandleDash() // Check if the player can dash
     {
-        if (dash && canDash && direction2D.x != 0 && !isRespawning) { StartCoroutine(Dash()); }
+        if (dash && canDash && direction2D.x != 0 && !isRespawning && !isCinematic) { StartCoroutine(Dash()); }
     }
 
     IEnumerator Dash() // Coroutine for the dash
@@ -189,6 +196,7 @@ public class Player : MonoBehaviour
 
     void ChangeEpoch(float epoch)
     {
+        if (!canSwitch) { return; }
         // Deactivate all GameObjects
         prehistoric.SetActive(false);
         medieval.SetActive(false);
