@@ -9,13 +9,12 @@ public class Player : MonoBehaviour
     private PlayerInput input; // Input del jugador para Unity.InputSystem
     private Rigidbody2D rb; // Rigidbody del personaje
     private GameObject prehistoric, medieval, wildwest, modern, future; // GameObject de la era prehistorica
+    public GameObject playerSpawner; // GameObject del spawner
     public float movementSpeed, jumpForce, dashSpeed, dashDuration; // Velocidad de movimiento, fuerza de salto, velocidad del dash, duracion del dash
     private Vector2 newPosition, direction2D, lastCheckpoint; // Nueva posicion, direccion 2D, ultimo CP
     public bool isJumping, isGrounded, isDashing, isRespawning = false; // Flags para movimiento
     public bool canDoubleJump, canDash = false; // Flags de habilidades
     public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
-
-
 
     void Awake()
     {
@@ -27,15 +26,15 @@ public class Player : MonoBehaviour
         dashDuration = 0.2f;
         lastCheckpoint = new Vector2(0f, 0f);
         isDashing = false;
-
-        if (dash) { canDash = true; } // Check if the player can dash
+        lastCheckpoint = playerSpawner.transform.position;
 
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
 
         if (sceneName == "Futuristic") // Check for scene (only for last scene)
         {
-            lastCheckpoint = new Vector2(-14.0f, -6.0f);
+            dJump = true;
+            dash = true;
             Debug.Log("Futuristic scene");
             // Find the GameObjects
             prehistoric = GameObject.Find("Prehistoric");
@@ -64,6 +63,9 @@ public class Player : MonoBehaviour
             };
         }
 
+        if (dash) { canDash = true; } // Check if the player can dash
+        if (dJump) { canDoubleJump = true; } // Check if the player can double jump
+
         input.actions["Jump"].started += _ => HandleJump();
 
         input.actions["Pause"].started += _ => Pause();
@@ -83,8 +85,6 @@ public class Player : MonoBehaviour
         direction2D = input.actions["Move"].ReadValue<Vector2>(); // Vector2D de movimiento
         // Move the character
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
-        if (!isJumping) { rb.gravityScale = 1.0f; }
-
     }
 
     void HandleJump()
@@ -96,7 +96,6 @@ public class Player : MonoBehaviour
             Jump();
         }
     }
-
 
     void Jump()
     {
@@ -140,6 +139,15 @@ public class Player : MonoBehaviour
         {
             isGrounded = false;
             isJumping = true;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Checkpoint")) // Checkpoints
+        {
+            lastCheckpoint = other.transform.position;
+            Debug.Log("Checkpoint reached");
         }
     }
 
@@ -214,10 +222,8 @@ public class Player : MonoBehaviour
         }
     }
 
-
     void Shoot()
     {
         Debug.Log("Pew pew");
     }
-
 }
