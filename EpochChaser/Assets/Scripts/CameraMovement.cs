@@ -9,11 +9,12 @@ public class CameraMovement : MonoBehaviour
     // Safe area boundaries
     [SerializeField] private Vector3 offset;
     [SerializeField] private float minX, maxX, minY, maxY; // Boundaries
+    public bool following = true;
 
 
     private void FixedUpdate()
     {
-        Follow();
+        if (following) { Follow(); }
     }
     private void Follow()
     {
