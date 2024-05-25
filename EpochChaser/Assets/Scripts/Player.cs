@@ -113,7 +113,7 @@ public class Player : MonoBehaviour
 
             isJumping = true;
             rb.gravityScale = 3.0f;
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
 
         }
     }
