@@ -7,14 +7,18 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private PlayerInput input; // Input del jugador para Unity.InputSystem
-    private Rigidbody2D rb; // Rigidbody del personaje
+    private Rigidbody2D rb, rb2; // Rigidbody del personaje
     private GameObject prehistoric, medieval, wildwest, modern, future; // GameObject de la era prehistorica
     public GameObject playerSpawner; // GameObject del spawner
     public float movementSpeed, jumpForce, dashSpeed, dashDuration; // Velocidad de movimiento, fuerza de salto, velocidad del dash, duracion del dash
-    private Vector2 newPosition, direction2D, lastCheckpoint; // Nueva posicion, direccion 2D, ultimo CP
+    private Vector2 newPosition, direction2D, lastCheckpoint, HookForce, mousePosition, direction; // Nueva posicion, direccion 2D, ultimo CP
     public bool isJumping, isGrounded, isDashing, isRespawning, isCinematic = false; // Flags para movimiento
     public bool canDoubleJump, canDash, canSwitch = false; // Flags de habilidades
     public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
+    public float distance;
+    public GameObject prefab;
+    public float ForceDistnace;
+    public GameObject HookScript;
 
     void Awake()
     {
@@ -27,6 +31,7 @@ public class Player : MonoBehaviour
         lastCheckpoint = new Vector2(0f, 0f);
         isDashing = false;
         lastCheckpoint = playerSpawner.transform.position;
+        rb2 = HookScript.GetComponent<Rigidbody2D>();
 
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
@@ -75,6 +80,8 @@ public class Player : MonoBehaviour
 
         input.actions["Shoot"].started += _ => Shoot();
 
+        input.actions["Hook"].started += _ => HookLaunch();
+
         transform.position = lastCheckpoint;
     }
 
@@ -118,6 +125,30 @@ public class Player : MonoBehaviour
         }
     }
 
+    Vector2 GetDirection(Vector2 fromPosition, Vector2 toPosition)
+    {
+        direction = toPosition - fromPosition;
+        return direction.normalized;
+    }
+
+    public void HookUse(){
+        rb.AddForce(HookForce, ForceMode2D.Impulse);
+    }
+
+    void HookLaunch(){
+        
+
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        direction = GetDirection(rb.transform.position, mousePosition);
+        HookForce.x = direction.x*distance;
+        HookForce.y = direction.y*distance;
+        GameObject newObject = Instantiate(prefab, rb.position, Quaternion.LookRotation(direction));
+        Rigidbody2D rbPrefab = newObject.GetComponent<Rigidbody2D>();
+        rbPrefab.AddForce(HookForce*5, ForceMode2D.Impulse);
+
+
+    }
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground")) // Checar si toca el suelo
@@ -156,6 +187,11 @@ public class Player : MonoBehaviour
             ChangeEpoch(5);
             canSwitch = false;
         }
+
+        if (other.tag == "Dash") { dash = true; }
+        if (other.tag == "DoubleJump") { dJump = true; }
+        if (other.tag == "WallJump") { wJump = true; }
+        if (other.tag == "GrapplingHook") { gHook = true; }
     }
 
     IEnumerator Respawn() // Coroutine for the respawn
