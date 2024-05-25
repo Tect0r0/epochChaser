@@ -5,8 +5,8 @@ using UnityEngine;
 public class Hook : MonoBehaviour
 {
     public GameObject hook;
-    public Rigidbody2D rb;
-    public Rigidbody2D rb2;
+    private Rigidbody2D rb;
+    private Rigidbody2D rb2;
     public Player PlayerScript;
     public float distance;
 
