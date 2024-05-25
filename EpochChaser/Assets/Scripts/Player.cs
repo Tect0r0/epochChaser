@@ -8,15 +8,16 @@ public class Player : MonoBehaviour
 {
     private PlayerInput input; // Input del jugador para Unity.InputSystem
     private Rigidbody2D rb; // Rigidbody del personaje
-    private GameObject prehistoric; // GameObject de la era prehistorica
-    private GameObject medieval; // GameObject de la era medieval
-    private GameObject wildwest; // GameObject de la era del oeste
-    private GameObject modern; // GameObject de la era moderna
-    private GameObject future; // GameObject del futuro
-    public float movementSpeed; // Velocidad del personaje
-    public float jumpForce; // Fuerza de salto
+    private GameObject prehistoric, medieval, wildwest, modern, future; // GameObject de la era prehistorica
+    public float movementSpeed, jumpForce, dashSpeed, dashDuration; // Velocidad de movimiento, fuerza de salto, velocidad del dash, duracion del dash
+    public float yVelocity, xVelocity;
+    private Vector2 newPosition, direction2D; // Nueva posicion, direccion 2D, 
     public bool isJumping = false; // Flag de salto
     public bool isGrounded = false; // Flag de suelo
+    public bool canDoubleJump, canDash = false; // Flag de doble salto, flag de dash
+    public bool isDashing = false; // Flag de dash
+    public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
+
 
 
     void Awake()
@@ -25,11 +26,15 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         jumpForce = 15.0f;
         movementSpeed = 5.0f;
+        dashSpeed = 40.0f;
+        dashDuration = 0.2f;
+
+        if (dash) { canDash = true; } // Check if the player can dash
 
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
 
-        if (sceneName == "Futuristic") // Check for scene
+        if (sceneName == "Futuristic") // Check for scene (only for last scene)
         {
             Debug.Log("Futuristic scene");
             // Find the GameObjects
@@ -61,31 +66,59 @@ public class Player : MonoBehaviour
             };
         }
 
-        input.actions["Jump"].started += _ => Jump();
+        input.actions["Jump"].started += _ => HandleJump();
 
         input.actions["Pause"].started += _ => Pause();
+
+        input.actions["Dash"].started += _ => HandleDash();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        direction2D = input.actions["Move"].ReadValue<Vector2>();
+        direction2D.Normalize();
+
+        if (isDashing) { return; } // Check if the player is dashing (to avoid movement)
+
         if (!isJumping) { rb.gravityScale = 1.0f; }
         // Read player input
-        Vector2 direction2D = input.actions["Move"].ReadValue<Vector2>();
-        direction2D.Normalize();
+
+        yVelocity = rb.velocity.y;
+        xVelocity = rb.velocity.x;
 
         // Move the character
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
     }
 
+    void HandleJump()
+    {
+        if (isDashing) { return; } // Check if the player is dashing (to avoid jumping
+
+        if (isGrounded || (dJump && canDoubleJump))
+        { // Check if the player is grounded or has double jump
+            Jump();
+        }
+    }
+
+
     void Jump()
     {
-        if (isGrounded)
+        if (isGrounded || canDoubleJump)
         {
+            if (!isGrounded) { canDoubleJump = false; } // Disable double jump if it was used
+            if (isGrounded)
+            {
+                if (dJump)
+                {
+                    canDoubleJump = true;
+                }
+            } // Enable double jump if it was grounded and has double jump
+
             isJumping = true;
-            isGrounded = false;
             rb.gravityScale = 3.0f;
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
         }
     }
 
@@ -95,7 +128,40 @@ public class Player : MonoBehaviour
         {
             isGrounded = true;
             isJumping = false;
+            if (dJump) { canDoubleJump = true; }
         }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+            isJumping = true;
+        }
+    }
+
+    private void HandleDash() // Check if the player can dash
+    {
+        if (dash && canDash) { StartCoroutine(Dash()); }
+    }
+
+    IEnumerator Dash() // Coroutine for the dash
+    {
+        canDash = false;
+        isDashing = true;
+
+        float originalGravity = rb.gravityScale; // Store the original gravity
+        rb.gravityScale = 0; // Set the gravity to 0
+
+        rb.velocity = new Vector2(direction2D.x, direction2D.y > 0 ? direction2D.y : 0) * dashSpeed;
+        yield return new WaitForSeconds(dashDuration); // Wait for the dash duration
+
+        isDashing = false;
+        rb.gravityScale = originalGravity; // Reset the gravity
+        rb.velocity = new Vector2(0, 0); // Reset the velocity
+        yield return new WaitForSeconds(1.0f); // Wait for 1 second (cooldown)
+        canDash = true;
     }
 
     void Pause()
