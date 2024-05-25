@@ -143,7 +143,7 @@ public class Player : MonoBehaviour
 
     private void HandleDash() // Check if the player can dash
     {
-        if (dash && canDash) { StartCoroutine(Dash()); }
+        if (dash && canDash && direction2D.x != 0) { StartCoroutine(Dash()); }
     }
 
     IEnumerator Dash() // Coroutine for the dash
@@ -160,7 +160,7 @@ public class Player : MonoBehaviour
         isDashing = false;
         rb.gravityScale = originalGravity; // Reset the gravity
         rb.velocity = new Vector2(0, 0); // Reset the velocity
-        yield return new WaitForSeconds(1.0f); // Wait for 1 second (cooldown)
+        yield return new WaitForSeconds(0.7f); // Wait for 1 second (cooldown)
         canDash = true;
     }
 
