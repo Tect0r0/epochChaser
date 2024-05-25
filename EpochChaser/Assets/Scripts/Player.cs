@@ -10,12 +10,9 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb; // Rigidbody del personaje
     private GameObject prehistoric, medieval, wildwest, modern, future; // GameObject de la era prehistorica
     public float movementSpeed, jumpForce, dashSpeed, dashDuration; // Velocidad de movimiento, fuerza de salto, velocidad del dash, duracion del dash
-    public float yVelocity, xVelocity;
-    private Vector2 newPosition, direction2D; // Nueva posicion, direccion 2D, 
-    public bool isJumping = false; // Flag de salto
-    public bool isGrounded = false; // Flag de suelo
-    public bool canDoubleJump, canDash = false; // Flag de doble salto, flag de dash
-    public bool isDashing = false; // Flag de dash
+    private Vector2 newPosition, direction2D, lastCheckpoint; // Nueva posicion, direccion 2D, ultimo CP
+    public bool isJumping, isGrounded, isDashing, isRespawning = false; // Flags para movimiento
+    public bool canDoubleJump, canDash = false; // Flags de habilidades
     public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
 
 
@@ -28,6 +25,8 @@ public class Player : MonoBehaviour
         movementSpeed = 5.0f;
         dashSpeed = 40.0f;
         dashDuration = 0.2f;
+        lastCheckpoint = new Vector2(0f, 0f);
+        isDashing = false;
 
         if (dash) { canDash = true; } // Check if the player can dash
 
@@ -36,6 +35,7 @@ public class Player : MonoBehaviour
 
         if (sceneName == "Futuristic") // Check for scene (only for last scene)
         {
+            lastCheckpoint = new Vector2(-14.0f, -6.0f);
             Debug.Log("Futuristic scene");
             // Find the GameObjects
             prehistoric = GameObject.Find("Prehistoric");
@@ -71,28 +71,25 @@ public class Player : MonoBehaviour
         input.actions["Dash"].started += _ => HandleDash();
 
         input.actions["Shoot"].started += _ => Shoot();
+
+        transform.position = lastCheckpoint;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        direction2D = input.actions["Move"].ReadValue<Vector2>().normalized; // Vector2D de movimiento
-
-        if (isDashing) { return; } // Check if the player is dashing (to avoid movement)
-
-        if (!isJumping) { rb.gravityScale = 1.0f; }
+        if (isDashing || isRespawning) { return; } // Check if the player is dashing (to avoid movement)
         // Read player input
-
-        yVelocity = rb.velocity.y;
-        xVelocity = rb.velocity.x;
-
+        direction2D = input.actions["Move"].ReadValue<Vector2>(); // Vector2D de movimiento
         // Move the character
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
+        if (!isJumping) { rb.gravityScale = 1.0f; }
+
     }
 
     void HandleJump()
     {
-        if (isDashing) { return; } // Check if the player is dashing (to avoid jumping
+        if (isDashing || isRespawning) { return; } // Check if the player is dashing (to avoid jumping
 
         if (isGrounded || (dJump && canDoubleJump))
         { // Check if the player is grounded or has double jump
@@ -123,26 +120,40 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground")) // Checar si toca el suelo
         {
             isGrounded = true;
             isJumping = false;
             if (dJump) { canDoubleJump = true; }
         }
+
+        if (other.gameObject.CompareTag("DeathPlane")) // Checkpoints
+        {
+            Debug.Log("You died");
+            StartCoroutine(Respawn());
+        }
     }
 
     private void OnCollisionExit2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground")) // Checar si deja de tocar el suelo
         {
             isGrounded = false;
             isJumping = true;
         }
     }
 
+    IEnumerator Respawn() // Coroutine for the respawn
+    {
+        isRespawning = true;
+        yield return new WaitForSeconds(1.0f); // Timer
+        transform.position = lastCheckpoint;
+        isRespawning = false;
+    }
+
     private void HandleDash() // Check if the player can dash
     {
-        if (dash && canDash && direction2D.x != 0) { StartCoroutine(Dash()); }
+        if (dash && canDash && direction2D.x != 0 && !isRespawning) { StartCoroutine(Dash()); }
     }
 
     IEnumerator Dash() // Coroutine for the dash
@@ -202,6 +213,7 @@ public class Player : MonoBehaviour
                 break;
         }
     }
+
 
     void Shoot()
     {
