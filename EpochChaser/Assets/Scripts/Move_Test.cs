@@ -13,6 +13,6 @@ public class Move_Test : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += new Vector3(1f, 0, 0);
+        transform.position += new Vector3(0.1f, 0, 0);
     }
 }
