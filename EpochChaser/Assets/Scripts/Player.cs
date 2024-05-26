@@ -202,7 +202,7 @@ public class Player : MonoBehaviour
     IEnumerator Cinematic1()
     {
         float cinematicSpeed = 5.0f; // Set the speed for the cinematic
-        float duration = 8.0f; // Set the duration for the cinematic
+        float duration = 8.3f; // Set the duration for the cinematic
         float startTime = Time.time; // Record the start time
 
         while (Time.time < startTime + duration)
