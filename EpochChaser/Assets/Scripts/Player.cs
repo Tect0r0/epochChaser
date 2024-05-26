@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Player : MonoBehaviour
@@ -25,6 +26,9 @@ public class Player : MonoBehaviour
     private Hook HookScript;
     private SpriteRenderer sprite;
     public GameObject HUDText;
+    public GameObject pauseUI;
+    public GameObject pauseButton;
+    public GameObject end;
     private TextMeshProUGUI hudText;
 
     void Awake()
@@ -44,6 +48,7 @@ public class Player : MonoBehaviour
         isDashing = false;
         lastCheckpoint = playerSpawner.transform.position;
         rb2 = HookScript.GetComponent<Rigidbody2D>();
+        pauseUI.SetActive(false);
 
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
@@ -293,7 +298,7 @@ public class Player : MonoBehaviour
         while (Time.time < startTime + duration)
         {
             exitDoor.velocity = new Vector2(0, cinematicSpeed); // Move the door down
-            cameraMovement.size = cameraMovement.size -= 0.035f; // Zoom in the camera
+            cameraMovement.size = cameraMovement.size -= 0.02f; // Zoom in the camera
             yield return null; // Wait for the next frame
         }
         cameraMovement.minY = -6;
@@ -320,6 +325,44 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(0, rb.velocity.y); // Stop the player
         yield return new WaitForSeconds(0.3f);
         StartCoroutine(FadeOut(sprite, 1.5f));
+
+        // End
+        end.SetActive(true);
+        string[] FinalNames = { "EndScreen", "Thanks", "G&M", "G&MText", "Audio", "AudioText", "Visuals", "VisualsText", "Quit", "QuitText" };
+
+        foreach (string name in FinalNames)
+        {
+            GameObject obj = GameObject.Find(name);
+            if (obj != null)
+            {
+                TextMeshProUGUI text = obj.GetComponent<TextMeshProUGUI>();
+                Image image = obj.GetComponent<Image>();
+
+                if (text != null)
+                {
+                    // Handle TextMeshProUGUI
+                    yield return StartCoroutine(FadeIn(text, 2.5f));
+                }
+                else if (image != null)
+                {
+                    // Handle Image
+                    yield return StartCoroutine(FadeIn(image, 2.5f));
+                }
+            }
+        }
+    }
+
+    IEnumerator FadeIn(Graphic graphic, float duration)
+    {
+        float rate = 1.0f / (duration * 60.0f);  // Assuming 60 frames per second
+        while (graphic.color.a < 1)
+        {
+            Color color = graphic.color;
+            color.a += rate;
+            graphic.color = color;
+            yield return null;  // Wait for the next frame
+        }
+        graphic.color = new Color(graphic.color.r, graphic.color.g, graphic.color.b, 1);
     }
 
     IEnumerator FadeOut(SpriteRenderer sprite, float duration)
@@ -366,9 +409,10 @@ public class Player : MonoBehaviour
         canDash = true;
     }
 
-    void Pause()
+    public void Pause()
     {
         Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        pauseUI.SetActive(!pauseUI.activeSelf);
     }
 
     void ChangeEpoch(float epoch)
@@ -389,30 +433,35 @@ public class Player : MonoBehaviour
                 prehistoric.SetActive(true);
                 hudText.text = "Prehistoric";
                 hudText.color = Color.red;
+                pauseButton.GetComponent<Image>().color = Color.red;
                 break;
             case 2:
                 Debug.Log("Knights >:)");
                 medieval.SetActive(true);
                 hudText.text = "Medieval";
                 hudText.color = Color.gray;
+                pauseButton.GetComponent<Image>().color = Color.gray;
                 break;
             case 3:
                 Debug.Log("Cowboys >:D");
                 wildwest.SetActive(true);
                 hudText.text = "Wild West";
                 hudText.color = Color.yellow;
+                pauseButton.GetComponent<Image>().color = Color.yellow;
                 break;
             case 4:
                 Debug.Log("Cars >:O");
                 modern.SetActive(true);
                 hudText.text = "Modern";
                 hudText.color = Color.blue;
+                pauseButton.GetComponent<Image>().color = Color.blue;
                 break;
             case 5:
                 Debug.Log("Robots >:X");
                 future.SetActive(true);
                 hudText.text = "Future";
                 hudText.color = Color.green;
+                pauseButton.GetComponent<Image>().color = Color.green;
                 break;
         }
     }
