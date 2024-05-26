@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hook: {fileID: 1539288646734497173}
-  PlayerScript: {fileID: 6998781416656157767, guid: 7b5729d2402ec694f99a0c67d40fd97a, type: 3}
+  PlayerScript: {fileID: 5967857395470998123, guid: 7b5729d2402ec694f99a0c67d40fd97a, type: 3}
   distance: 0
 --- !u!50 &-8219229002372224326
 Rigidbody2D:
