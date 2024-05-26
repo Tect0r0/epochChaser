@@ -115,6 +115,16 @@ public class Player : MonoBehaviour
         // Move the character
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
 
+        // Flip the sprite if moving left or right
+        if (direction2D.x > 0)
+        {
+            sprite.flipX = false; // moving right
+        }
+        else if (direction2D.x < 0)
+        {
+            sprite.flipX = true; // moving left
+        }
+
         if (bossDefeated)
         {
             BossDefeated();
