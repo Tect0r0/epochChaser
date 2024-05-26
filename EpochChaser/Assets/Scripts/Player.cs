@@ -242,8 +242,6 @@ public class Player : MonoBehaviour
             StartCoroutine(Cinematic1());
         }
 
-        if (other.gameObject.name == "BossDefeatTrigger") { bossDefeated = true; }
-
         if (other.tag == "Dash") { dash = true; }
         if (other.tag == "DoubleJump") { dJump = true; }
         if (other.tag == "WallJump") { wJump = true; }
@@ -421,6 +419,7 @@ public class Player : MonoBehaviour
 
     public void Pause()
     {
+        instructions.SetActive(false);
         Time.timeScale = Time.timeScale == 0 ? 1 : 0;
         pauseUI.SetActive(!pauseUI.activeSelf);
     }
