@@ -19,15 +19,16 @@ public class Player : MonoBehaviour
     public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
     public bool bossDefeated = false;
     public float distance;
-    public GameObject prefab;
+    public GameObject HookPrefab;
     public float ForceDistnace;
-    public GameObject HookScript;
+    private Hook HookScript;
     private SpriteRenderer sprite;
 
     void Awake()
     {
         input = GetComponent<PlayerInput>();
         sprite = GetComponent<SpriteRenderer>();
+        HookScript = HookPrefab.GetComponent<Hook>();
         camera = Camera.main;
         cameraMovement = camera.GetComponent<CameraMovement>();
         rb = GetComponent<Rigidbody2D>();
@@ -134,7 +135,6 @@ public class Player : MonoBehaviour
             isJumping = true;
             rb.gravityScale = 3.0f;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
         }
     }
 
@@ -145,26 +145,25 @@ public class Player : MonoBehaviour
     }
 
 
-    public void HookUse(Rigidbody2D rb){
-        
+    public void HookUse(Rigidbody2D rb)
+    {
         Debug.Log("Si");
         rb = this.GetComponent<Rigidbody2D>();
-        rb.AddForce(new Vector2(5,5), ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(5, 5), ForceMode2D.Impulse);
     }
 
-    void HookLaunch(){
-        
-
+    void HookLaunch()
+    {
         Debug.Log("se sirve");
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         direction = GetDirection(rb.transform.position, mousePosition);
         HookForce = direction * 5;
         Debug.Log("se sirve");
-        GameObject newObject = Instantiate(prefab, rb.position, Quaternion.identity);
+        GameObject newObject = Instantiate(HookPrefab, rb.position, Quaternion.identity);
         newObject.transform.position = new Vector2(newObject.transform.position.x, newObject.transform.position.y);
 
-        Rigidbody2D rbPrefab = newObject.GetComponent<Rigidbody2D>();
-        rbPrefab.AddForce(HookForce * 5, ForceMode2D.Impulse);
+        Rigidbody2D rbHookPrefab = newObject.GetComponent<Rigidbody2D>();
+        rbHookPrefab.AddForce(HookForce * 5, ForceMode2D.Impulse);
     }
 
     private void OnCollisionEnter2D(Collision2D other)

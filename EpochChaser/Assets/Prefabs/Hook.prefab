@@ -11,10 +11,8 @@ GameObject:
   - component: {fileID: 1153620692270590400}
   - component: {fileID: 2327832427693685939}
   - component: {fileID: 8507252185307085282}
-
   - component: {fileID: -3958013508494531098}
   - component: {fileID: 4252683952913062009}
-
   m_Layer: 0
   m_Name: Hook
   m_TagString: Untagged
@@ -102,11 +100,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hook: {fileID: 1539288646734497173}
-  PlayerScript: {fileID: 6998781416656157767, guid: 7b5729d2402ec694f99a0c67d40fd97a, type: 3}
+  PlayerScript: {fileID: 5967857395470998123, guid: 7b5729d2402ec694f99a0c67d40fd97a, type: 3}
   distance: 0
-
 --- !u!50 &-3958013508494531098
-
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -121,9 +117,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-
-  m_GravityScale: 0
-
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -137,7 +131,6 @@ Rigidbody2D:
   m_Constraints: 0
 --- !u!58 &4252683952913062009
 CircleCollider2D:
-
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -165,11 +158,9 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.21133333}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
-
