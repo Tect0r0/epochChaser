@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public GameObject HUDText;
     public GameObject pauseUI;
     public GameObject pauseButton;
+    public GameObject end;
     private TextMeshProUGUI hudText;
 
     void Awake()
@@ -297,7 +298,7 @@ public class Player : MonoBehaviour
         while (Time.time < startTime + duration)
         {
             exitDoor.velocity = new Vector2(0, cinematicSpeed); // Move the door down
-            cameraMovement.size = cameraMovement.size -= 0.035f; // Zoom in the camera
+            cameraMovement.size = cameraMovement.size -= 0.02f; // Zoom in the camera
             yield return null; // Wait for the next frame
         }
         cameraMovement.minY = -6;
@@ -324,6 +325,44 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(0, rb.velocity.y); // Stop the player
         yield return new WaitForSeconds(0.3f);
         StartCoroutine(FadeOut(sprite, 1.5f));
+
+        // End
+        end.SetActive(true);
+        string[] FinalNames = { "EndScreen", "Thanks", "G&M", "G&MText", "Audio", "AudioText", "Visuals", "VisualsText", "Quit", "QuitText" };
+
+        foreach (string name in FinalNames)
+        {
+            GameObject obj = GameObject.Find(name);
+            if (obj != null)
+            {
+                TextMeshProUGUI text = obj.GetComponent<TextMeshProUGUI>();
+                Image image = obj.GetComponent<Image>();
+
+                if (text != null)
+                {
+                    // Handle TextMeshProUGUI
+                    yield return StartCoroutine(FadeIn(text, 2.5f));
+                }
+                else if (image != null)
+                {
+                    // Handle Image
+                    yield return StartCoroutine(FadeIn(image, 2.5f));
+                }
+            }
+        }
+    }
+
+    IEnumerator FadeIn(Graphic graphic, float duration)
+    {
+        float rate = 1.0f / (duration * 60.0f);  // Assuming 60 frames per second
+        while (graphic.color.a < 1)
+        {
+            Color color = graphic.color;
+            color.a += rate;
+            graphic.color = color;
+            yield return null;  // Wait for the next frame
+        }
+        graphic.color = new Color(graphic.color.r, graphic.color.g, graphic.color.b, 1);
     }
 
     IEnumerator FadeOut(SpriteRenderer sprite, float duration)
