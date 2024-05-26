@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Player : MonoBehaviour
     public float movementSpeed, jumpForce, dashSpeed, dashDuration; // Velocidad de movimiento, fuerza de salto, velocidad del dash, duracion del dash
     private Vector2 newPosition, direction2D, lastCheckpoint, HookForce, mousePosition, direction; // Nueva posicion, direccion 2D, ultimo CP
     public bool isJumping, isGrounded, isDashing, isRespawning, isCinematic = false; // Flags para movimiento
-    public bool canDoubleJump, canDash, canSwitch = false; // Flags de habilidades
+    public bool canDoubleJump, canDash, canSwitch, canHook = false; // Flags de habilidades
     public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
     public bool bossDefeated = false;
     public float distance;
@@ -23,9 +24,12 @@ public class Player : MonoBehaviour
     public float ForceDistnace;
     private Hook HookScript;
     private SpriteRenderer sprite;
+    public GameObject HUDText;
+    private TextMeshProUGUI hudText;
 
     void Awake()
     {
+        hudText = HUDText.GetComponent<TextMeshProUGUI>();
         input = GetComponent<PlayerInput>();
         sprite = GetComponent<SpriteRenderer>();
         HookScript = HookPrefab.GetComponent<Hook>();
@@ -44,11 +48,19 @@ public class Player : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
 
+        if (sceneName == "ZZZSampleScene")
+        {
+            dJump = true;
+            dash = true;
+            gHook = true;
+        }
+
         if (sceneName == "Futuristic") // Check for scene (only for last scene)
         {
             canSwitch = true;
             dJump = true;
             dash = true;
+            gHook = true;
             Debug.Log("Futuristic scene");
             // Find the GameObjects
             prehistoric = GameObject.Find("Prehistoric");
@@ -79,6 +91,7 @@ public class Player : MonoBehaviour
 
         if (dash) { canDash = true; } // Check if the player can dash
         if (dJump) { canDoubleJump = true; } // Check if the player can double jump
+        if (gHook) { canHook = true; } // Check if the player can hook
 
         input.actions["Jump"].started += _ => HandleJump();
 
@@ -88,7 +101,7 @@ public class Player : MonoBehaviour
 
         input.actions["Shoot"].started += _ => Shoot();
 
-        input.actions["Hook"].started += _ => HookLaunch();
+        input.actions["Hook"].started += _ => HandleHook();
 
         transform.position = lastCheckpoint;
     }
@@ -144,26 +157,38 @@ public class Player : MonoBehaviour
         return direction.normalized;
     }
 
-
-    public void HookUse(Rigidbody2D rb)
+    public void HookUse(Vector2 hookablePos)
     {
-        Debug.Log("Si");
-        rb = this.GetComponent<Rigidbody2D>();
-        rb.AddForce(new Vector2(5, 5), ForceMode2D.Impulse);
+        canDash = true;
+        canDoubleJump = true;
+        StartCoroutine(HookMovement(hookablePos));
     }
 
-    void HookLaunch()
+    IEnumerator HookMovement(Vector2 hookablePos)
     {
-        Debug.Log("se sirve");
+        transform.position = new Vector2(hookablePos.x, hookablePos.y);
+        rb.velocity = new Vector2(0, 0);
+        yield return new WaitForSeconds(1f);
+    }
+
+    void HandleHook()
+    {
+        if (gHook && !isRespawning && !isCinematic && canHook) { StartCoroutine(HookLaunch()); }
+    }
+
+    IEnumerator HookLaunch()
+    {
+        canHook = false;
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         direction = GetDirection(rb.transform.position, mousePosition);
         HookForce = direction * 5;
-        Debug.Log("se sirve");
         GameObject newObject = Instantiate(HookPrefab, rb.position, Quaternion.identity);
         newObject.transform.position = new Vector2(newObject.transform.position.x, newObject.transform.position.y);
 
         Rigidbody2D rbHookPrefab = newObject.GetComponent<Rigidbody2D>();
         rbHookPrefab.AddForce(HookForce * 5, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.5f);
+        canHook = true;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -218,6 +243,7 @@ public class Player : MonoBehaviour
 
     IEnumerator Cinematic1()
     {
+        HUDText.SetActive(false);
         float cinematicSpeed = 5.0f; // Set the speed for the cinematic
         float duration = 8.3f; // Set the duration for the cinematic
         float startTime = Time.time; // Record the start time
@@ -245,10 +271,12 @@ public class Player : MonoBehaviour
 
         canSwitch = true;
         isCinematic = false;
+        HUDText.SetActive(true);
     }
 
     public void BossDefeated()
     {
+        ChangeEpoch(5);
         transform.position = new Vector2(transform.position.x, -7);
         rb.velocity = new Vector2(0, 0);
         bossDefeated = true;
@@ -259,6 +287,7 @@ public class Player : MonoBehaviour
 
     IEnumerator Cinematic2()
     {
+        HUDText.SetActive(false);
         float cinematicSpeed = 5.0f; // Set the speed for the cinematic
         float startTime = Time.time; // Record the start time
         float duration = 1.7f; // Set the duration for the cinematic
@@ -362,22 +391,32 @@ public class Player : MonoBehaviour
             case 1:
                 Debug.Log("Dinos >:v");
                 prehistoric.SetActive(true);
+                hudText.text = "Prehistoric";
+                hudText.color = Color.red;
                 break;
             case 2:
                 Debug.Log("Knights >:)");
                 medieval.SetActive(true);
+                hudText.text = "Medieval";
+                hudText.color = Color.gray;
                 break;
             case 3:
                 Debug.Log("Cowboys >:D");
                 wildwest.SetActive(true);
+                hudText.text = "Wild West";
+                hudText.color = Color.yellow;
                 break;
             case 4:
                 Debug.Log("Cars >:O");
                 modern.SetActive(true);
+                hudText.text = "Modern";
+                hudText.color = Color.blue;
                 break;
             case 5:
                 Debug.Log("Robots >:X");
                 future.SetActive(true);
+                hudText.text = "Future";
+                hudText.color = Color.green;
                 break;
         }
     }

@@ -99,8 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20447efbaa0b8404fb503884ecf4d37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hook: {fileID: 1539288646734497173}
-  PlayerScript: {fileID: 5967857395470998123, guid: 7b5729d2402ec694f99a0c67d40fd97a, type: 3}
+  player: {fileID: 4473489398713036622, guid: 7b5729d2402ec694f99a0c67d40fd97a, type: 3}
   distance: 0
 --- !u!50 &-3958013508494531098
 Rigidbody2D:
@@ -158,7 +157,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
