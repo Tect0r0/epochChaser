@@ -116,30 +116,17 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
 
         // Flip the sprite if moving left or right
-        if (direction2D.x > 0)
-        {
-            sprite.flipX = false; // moving right
-        }
-        else if (direction2D.x < 0)
-        {
-            sprite.flipX = true; // moving left
-        }
+        if (direction2D.x > 0) { sprite.flipX = false; }
+        else if (direction2D.x < 0) { sprite.flipX = true; }
 
-        if (bossDefeated)
-        {
-            BossDefeated();
-        }
-
+        if (bossDefeated) { BossDefeated(); }
     }
 
     void HandleJump()
     {
         if (isDashing || isRespawning || isCinematic) { return; } // Check if the player is dashing (to avoid jumping
 
-        if (isGrounded || (dJump && canDoubleJump))
-        { // Check if the player is grounded or has double jump
-            Jump();
-        }
+        if (isGrounded || (dJump && canDoubleJump)) { Jump(); }
     }
 
     void Jump()
@@ -209,12 +196,8 @@ public class Player : MonoBehaviour
             isJumping = false;
             if (dJump) { canDoubleJump = true; }
         }
-
-        if (other.gameObject.CompareTag("DeathPlane")) // Checkpoints
-        {
-            Debug.Log("You died");
-            StartCoroutine(Respawn());
-        }
+        // Checkpoints
+        if (other.gameObject.CompareTag("DeathPlane")) { StartCoroutine(Respawn()); }
     }
 
     private void OnCollisionExit2D(Collision2D other)
@@ -236,6 +219,7 @@ public class Player : MonoBehaviour
         if (other.gameObject.name == "SwitchTriggerOff")
         {
             Debug.Log("Switchn't");
+            HUDText.SetActive(false);
             ChangeEpoch(5);
             canSwitch = false;
         }
@@ -244,6 +228,8 @@ public class Player : MonoBehaviour
             isCinematic = true;
             StartCoroutine(Cinematic1());
         }
+
+        if (other.gameObject.name == "BossDefeatTrigger") { bossDefeated = true; }
 
         if (other.tag == "Dash") { dash = true; }
         if (other.tag == "DoubleJump") { dJump = true; }
