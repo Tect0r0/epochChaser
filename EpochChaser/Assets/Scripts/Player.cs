@@ -213,13 +213,13 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(0, rb.velocity.y); // Stop the player
         Rigidbody2D door = GameObject.Find("Door").GetComponent<Rigidbody2D>();
 
-        duration = 1.5f; // Set the duration for the cinematic
+        duration = 1.7f; // Set the duration for the cinematic
         startTime = Time.time; // Record the start time
 
         while (Time.time < startTime + duration)
         {
             door.velocity = new Vector2(0, -cinematicSpeed); // Move the door down
-            cameraMovement.size = cameraMovement.size += 0.001f; // Zoom in the camera
+            cameraMovement.size = cameraMovement.size += 0.004f; // Zoom in the camera
             yield return null; // Wait for the next frame
         }
         door.velocity = new Vector2(0, 0); // Stop the door
