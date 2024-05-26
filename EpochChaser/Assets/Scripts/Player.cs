@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Player : MonoBehaviour
@@ -25,6 +26,8 @@ public class Player : MonoBehaviour
     private Hook HookScript;
     private SpriteRenderer sprite;
     public GameObject HUDText;
+    public GameObject pauseUI;
+    public GameObject pauseButton;
     private TextMeshProUGUI hudText;
 
     void Awake()
@@ -44,6 +47,7 @@ public class Player : MonoBehaviour
         isDashing = false;
         lastCheckpoint = playerSpawner.transform.position;
         rb2 = HookScript.GetComponent<Rigidbody2D>();
+        pauseUI.SetActive(false);
 
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
@@ -366,9 +370,10 @@ public class Player : MonoBehaviour
         canDash = true;
     }
 
-    void Pause()
+    public void Pause()
     {
         Time.timeScale = Time.timeScale == 0 ? 1 : 0;
+        pauseUI.SetActive(!pauseUI.activeSelf);
     }
 
     void ChangeEpoch(float epoch)
@@ -389,30 +394,35 @@ public class Player : MonoBehaviour
                 prehistoric.SetActive(true);
                 hudText.text = "Prehistoric";
                 hudText.color = Color.red;
+                pauseButton.GetComponent<Image>().color = Color.red;
                 break;
             case 2:
                 Debug.Log("Knights >:)");
                 medieval.SetActive(true);
                 hudText.text = "Medieval";
                 hudText.color = Color.gray;
+                pauseButton.GetComponent<Image>().color = Color.gray;
                 break;
             case 3:
                 Debug.Log("Cowboys >:D");
                 wildwest.SetActive(true);
                 hudText.text = "Wild West";
                 hudText.color = Color.yellow;
+                pauseButton.GetComponent<Image>().color = Color.yellow;
                 break;
             case 4:
                 Debug.Log("Cars >:O");
                 modern.SetActive(true);
                 hudText.text = "Modern";
                 hudText.color = Color.blue;
+                pauseButton.GetComponent<Image>().color = Color.blue;
                 break;
             case 5:
                 Debug.Log("Robots >:X");
                 future.SetActive(true);
                 hudText.text = "Future";
                 hudText.color = Color.green;
+                pauseButton.GetComponent<Image>().color = Color.green;
                 break;
         }
     }
