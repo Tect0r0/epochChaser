@@ -7,6 +7,10 @@ public static class EnemyManager
     public static bool isVisible = true;
     public static bool throwDynamite = false;
     public static bool isDiscovered = false;
+    public static bool heatCleared = false;
+    public static bool isOnSight = false;
+    public static bool isActive = false;
+
     public static void SetVisible()
     {
         isVisible = true;
