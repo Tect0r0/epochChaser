@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
         // Move the character
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
 
-        if (direction2D != Vector2.zero) { animator.SetBool("isWalking", true); }
+        if (rb.velocity != Vector2.zero) { animator.SetBool("isWalking", true); }
         else { animator.SetBool("isWalking", false); }
 
         // Flip the sprite if moving left or right
@@ -475,8 +475,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Shoot()
-    {
-        Debug.Log("Pew pew");
-    }
+    void Shoot() { Debug.Log("Pew pew"); }
+
+    public void QuitGame() { Application.Quit(); }
 }
