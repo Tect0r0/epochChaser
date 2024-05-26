@@ -31,18 +31,15 @@ public class Hook : MonoBehaviour
 
         distance = Mathf.Sqrt(Mathf.Pow(difference.x, 2f) + Mathf.Pow(difference.y, 2f));
 
-        if (distance > 3)
-        {
-            Destroy(gameObject);
-        }
+
     }
 
     void OnTriggerEnter2D(Collider2D other) 
     {
-        if (other.CompareTag("Hookable"))
+        if (other.tag == "Hookable")
         {
-        
-            PlayerScript.HookUse();
+            Debug.Log("Si");
+            PlayerScript.HookUse(rb);
         }
     }
 }
