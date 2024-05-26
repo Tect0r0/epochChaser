@@ -179,7 +179,7 @@ MonoBehaviour:
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 3074706769933259217, guid: d5d3ec853638d134891b2d986de910ef, type: 3}
 --- !u!114 &5967857395470998123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,14 +192,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852b6c14a172d1c46a070f02b1549807, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-
-  cameraMovement: {fileID: 0}
-  playerSpawner: {fileID: 0}
-
-  movementSpeed: 5
-  jumpForce: 15
-  dashSpeed: 40
-  dashDuration: 0.2
+  camera: {fileID: 3074706769933259217, guid: d5d3ec853638d134891b2d986de910ef, type: 3}
+  playerSpawner: {fileID: 7509459999871903331, guid: 659ebaf2e88b7c84cb5e462b75e3cd99, type: 3}
+  movementSpeed: 0
+  jumpForce: 0
+  dashSpeed: 0
+  dashDuration: 0
   isJumping: 0
   isGrounded: 0
   isDashing: 0
@@ -212,7 +210,7 @@ MonoBehaviour:
   wJump: 0
   gHook: 0
   dash: 0
+  bossDefeated: 0
   distance: 0
-  prefab: {fileID: 1539288646734497173, guid: c02a5173482e2e84d844ca5be8629ea8, type: 3}
+  HookPrefab: {fileID: 1539288646734497173, guid: c02a5173482e2e84d844ca5be8629ea8, type: 3}
   ForceDistnace: 0
-  HookScript: {fileID: 1539288646734497173, guid: c02a5173482e2e84d844ca5be8629ea8, type: 3}

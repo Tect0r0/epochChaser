@@ -105,10 +105,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64838665fbb582c4d8a374ae2b161ebc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 7422995699796919436, guid: 7b5729d2402ec694f99a0c67d40fd97a, type: 3}
   offset: {x: 0, y: 0, z: -10}
   minX: 0
   maxX: 200
   minY: 0
   maxY: 100
+  size: 10
   following: 1
