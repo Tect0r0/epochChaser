@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     public GameObject pauseButton;
     public GameObject end;
     private TextMeshProUGUI hudText;
+    public Animator animator;
 
     void Awake()
     {
@@ -49,6 +50,7 @@ public class Player : MonoBehaviour
         lastCheckpoint = playerSpawner.transform.position;
         rb2 = HookScript.GetComponent<Rigidbody2D>();
         pauseUI.SetActive(false);
+        animator = GetComponent<Animator>();
 
         Scene currentScene = SceneManager.GetActiveScene();
         string sceneName = currentScene.name;
@@ -120,6 +122,9 @@ public class Player : MonoBehaviour
         // Move the character
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
 
+        if (direction2D != Vector2.zero) { animator.SetBool("isWalking", true); }
+        else { animator.SetBool("isWalking", false); }
+
         // Flip the sprite if moving left or right
         if (direction2D.x > 0) { sprite.flipX = false; }
         else if (direction2D.x < 0) { sprite.flipX = true; }
@@ -148,6 +153,7 @@ public class Player : MonoBehaviour
             } // Enable double jump if it was grounded and has double jump
 
             isJumping = true;
+            animator.SetBool("isJumping", true);
             rb.gravityScale = 3.0f;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
@@ -199,6 +205,7 @@ public class Player : MonoBehaviour
         {
             isGrounded = true;
             isJumping = false;
+            animator.SetBool("isJumping", false);
             if (dJump) { canDoubleJump = true; }
         }
         // Checkpoints
@@ -395,6 +402,7 @@ public class Player : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
+        animator.SetBool("isDashing", true);
 
         float originalGravity = rb.gravityScale; // Store the original gravity
         rb.gravityScale = 0; // Set the gravity to 0
@@ -403,6 +411,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(dashDuration); // Wait for the dash duration
 
         isDashing = false;
+        animator.SetBool("isDashing", false);
         rb.gravityScale = originalGravity; // Reset the gravity
         rb.velocity = new Vector2(0, 0); // Reset the velocity
         yield return new WaitForSeconds(0.7f); // Wait for 1 second (cooldown)
