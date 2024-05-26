@@ -8,13 +8,23 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private Transform target;
     // Safe area boundaries
     [SerializeField] private Vector3 offset;
-    [SerializeField] private float minX, maxX, minY, maxY; // Boundaries
+    public float minX, maxX, minY, maxY; // Boundaries
+    public float size = 10f;
     public bool following = true;
+
+    private Camera cam;
+
+    private void Awake()
+    {
+        cam = GetComponent<Camera>();
+    }
 
 
     private void FixedUpdate()
     {
+        cam.orthographicSize = size;
         if (following) { Follow(); }
+
     }
     private void Follow()
     {

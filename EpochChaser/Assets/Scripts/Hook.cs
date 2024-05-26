@@ -30,11 +30,9 @@ public class Hook : MonoBehaviour
         Vector2 difference = new Vector2(v1.x - v2.x, v1.y - v2.y);
 
         distance = Mathf.Sqrt(Mathf.Pow(difference.x, 2f) + Mathf.Pow(difference.y, 2f));
-
-
     }
 
-    void OnTriggerEnter2D(Collider2D other) 
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Hookable")
         {
