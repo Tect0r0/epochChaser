@@ -7,6 +7,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private PlayerInput input; // Input del jugador para Unity.InputSystem
+    public CameraMovement cameraMovement;
     private Rigidbody2D rb, rb2; // Rigidbody del personaje
     private GameObject prehistoric, medieval, wildwest, modern, future; // GameObject de la era prehistorica
     public GameObject playerSpawner; // GameObject del spawner
@@ -23,6 +24,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         input = GetComponent<PlayerInput>();
+        cameraMovement = Camera.main.GetComponent<CameraMovement>();
         rb = GetComponent<Rigidbody2D>();
         jumpForce = 15.0f;
         movementSpeed = 5.0f;
@@ -131,22 +133,20 @@ public class Player : MonoBehaviour
         return direction.normalized;
     }
 
-    public void HookUse(){
+    public void HookUse()
+    {
         rb.AddForce(HookForce, ForceMode2D.Impulse);
     }
 
-    void HookLaunch(){
-        
-
+    void HookLaunch()
+    {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         direction = GetDirection(rb.transform.position, mousePosition);
-        HookForce.x = direction.x*distance;
-        HookForce.y = direction.y*distance;
+        HookForce.x = direction.x * distance;
+        HookForce.y = direction.y * distance;
         GameObject newObject = Instantiate(prefab, rb.position, Quaternion.LookRotation(direction));
         Rigidbody2D rbPrefab = newObject.GetComponent<Rigidbody2D>();
-        rbPrefab.AddForce(HookForce*5, ForceMode2D.Impulse);
-
-
+        rbPrefab.AddForce(HookForce * 5, ForceMode2D.Impulse);
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -187,11 +187,49 @@ public class Player : MonoBehaviour
             ChangeEpoch(5);
             canSwitch = false;
         }
+        if (other.gameObject.name == "CinematicTrigger")
+        {
+            isCinematic = true;
+            StartCoroutine(Cinematic1());
+        }
 
         if (other.tag == "Dash") { dash = true; }
         if (other.tag == "DoubleJump") { dJump = true; }
         if (other.tag == "WallJump") { wJump = true; }
         if (other.tag == "GrapplingHook") { gHook = true; }
+    }
+
+    IEnumerator Cinematic1()
+    {
+        float cinematicSpeed = 5.0f; // Set the speed for the cinematic
+        float duration = 8.0f; // Set the duration for the cinematic
+        float startTime = Time.time; // Record the start time
+
+        while (Time.time < startTime + duration)
+        {
+            rb.velocity = new Vector2(cinematicSpeed, rb.velocity.y); // Move the player to the right
+            yield return null; // Wait for the next frame
+        }
+        rb.velocity = new Vector2(0, rb.velocity.y); // Stop the player
+        Rigidbody2D door = GameObject.Find("Door").GetComponent<Rigidbody2D>();
+
+        duration = 1.5f; // Set the duration for the cinematic
+        startTime = Time.time; // Record the start time
+
+        while (Time.time < startTime + duration)
+        {
+            door.velocity = new Vector2(0, -cinematicSpeed); // Move the door down
+            cameraMovement.size = cameraMovement.size += 0.001f; // Zoom in the camera
+            yield return null; // Wait for the next frame
+        }
+        door.velocity = new Vector2(0, 0); // Stop the door
+        cameraMovement.following = false; // Stop the camera from following the player
+        cameraMovement.minX = 124; // Set the boundaries for the camera
+        cameraMovement.maxX = 124;
+
+        yield return new WaitForSeconds(3.0f);
+        canSwitch = true;
+        isCinematic = false;
     }
 
     IEnumerator Respawn() // Coroutine for the respawn
