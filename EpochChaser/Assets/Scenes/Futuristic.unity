@@ -681,6 +681,7 @@ BoxCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 122670056}
   m_Enabled: 1
+
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -719,6 +720,7 @@ BoxCollider2D:
   m_Size: {x: 1, y: 5.606066}
   m_EdgeRadius: 0
 --- !u!1 &128170332
+
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9701,7 +9703,9 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+
 --- !u!1 &1321023142
+
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9720,7 +9724,9 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+
 --- !u!4 &1321023143
+
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10891,7 +10897,9 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+
 --- !u!1 &1487790672
+
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13360,10 +13368,12 @@ Transform:
   m_LocalPosition: {x: 1.92, y: -14.95, z: 0}
   m_LocalScale: {x: 19.3266, y: 5.7216816, z: 1}
   m_ConstrainProportionsScale: 0
+
   m_Children: []
   m_Father: {fileID: 1004600508}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &1948503316
+
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14488,7 +14498,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8568827648497699495, guid: 659ebaf2e88b7c84cb5e462b75e3cd99, type: 3}
       propertyPath: m_LocalPosition.x
+
       value: 82.17
+
       objectReference: {fileID: 0}
     - target: {fileID: 8568827648497699495, guid: 659ebaf2e88b7c84cb5e462b75e3cd99, type: 3}
       propertyPath: m_LocalPosition.y
@@ -14531,6 +14543,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 659ebaf2e88b7c84cb5e462b75e3cd99, type: 3}
+
 --- !u!1001 &2096859541378587354
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14604,11 +14617,14 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5d3ec853638d134891b2d986de910ef, type: 3}
+
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+
   - {fileID: 2096859541378587354}
+
   - {fileID: 1644671371}
   - {fileID: 695610717}
   - {fileID: 46200715}
@@ -14618,7 +14634,9 @@ SceneRoots:
   - {fileID: 378749290}
   - {fileID: 164092112729650671}
   - {fileID: 1697786720}
+
   - {fileID: 575839899}
   - {fileID: 686553950}
   - {fileID: 767819052}
   - {fileID: 845580135}
+

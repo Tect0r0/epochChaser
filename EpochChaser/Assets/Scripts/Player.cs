@@ -144,18 +144,25 @@ public class Player : MonoBehaviour
         return direction.normalized;
     }
 
-    public void HookUse()
-    {
-        rb.AddForce(HookForce, ForceMode2D.Impulse);
+
+    public void HookUse(Rigidbody2D rb){
+        
+        Debug.Log("Si");
+        rb = this.GetComponent<Rigidbody2D>();
+        rb.AddForce(new Vector2(5,5), ForceMode2D.Impulse);
     }
 
-    void HookLaunch()
-    {
+    void HookLaunch(){
+        
+
+        Debug.Log("se sirve");
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         direction = GetDirection(rb.transform.position, mousePosition);
-        HookForce.x = direction.x * distance;
-        HookForce.y = direction.y * distance;
-        GameObject newObject = Instantiate(prefab, rb.position, Quaternion.LookRotation(direction));
+        HookForce = direction * 5;
+        Debug.Log("se sirve");
+        GameObject newObject = Instantiate(prefab, rb.position, Quaternion.identity);
+        newObject.transform.position = new Vector2(newObject.transform.position.x, newObject.transform.position.y);
+
         Rigidbody2D rbPrefab = newObject.GetComponent<Rigidbody2D>();
         rbPrefab.AddForce(HookForce * 5, ForceMode2D.Impulse);
     }

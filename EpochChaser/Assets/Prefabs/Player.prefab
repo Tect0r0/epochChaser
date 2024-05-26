@@ -192,8 +192,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852b6c14a172d1c46a070f02b1549807, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+
   cameraMovement: {fileID: 0}
   playerSpawner: {fileID: 0}
+
   movementSpeed: 5
   jumpForce: 15
   dashSpeed: 40
