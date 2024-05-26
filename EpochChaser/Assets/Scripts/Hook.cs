@@ -37,11 +37,11 @@ public class Hook : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other) 
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Hookable"))
         {
-        
+
             PlayerScript.HookUse();
         }
     }
