@@ -7,7 +7,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private PlayerInput input; // Input del jugador para Unity.InputSystem
-    public CameraMovement cameraMovement;
+    private CameraMovement cameraMovement;
+    public Camera camera;
     private Rigidbody2D rb, rb2; // Rigidbody del personaje
     private GameObject prehistoric, medieval, wildwest, modern, future; // GameObject de la era prehistorica
     public GameObject playerSpawner; // GameObject del spawner
@@ -16,15 +17,19 @@ public class Player : MonoBehaviour
     public bool isJumping, isGrounded, isDashing, isRespawning, isCinematic = false; // Flags para movimiento
     public bool canDoubleJump, canDash, canSwitch = false; // Flags de habilidades
     public bool dJump, wJump, gHook, dash = false; // Flags de habilidades
+    public bool bossDefeated = false;
     public float distance;
     public GameObject prefab;
     public float ForceDistnace;
     public GameObject HookScript;
+    private SpriteRenderer sprite;
 
     void Awake()
     {
         input = GetComponent<PlayerInput>();
-        cameraMovement = Camera.main.GetComponent<CameraMovement>();
+        sprite = GetComponent<SpriteRenderer>();
+        camera = Camera.main;
+        cameraMovement = camera.GetComponent<CameraMovement>();
         rb = GetComponent<Rigidbody2D>();
         jumpForce = 15.0f;
         movementSpeed = 5.0f;
@@ -95,6 +100,12 @@ public class Player : MonoBehaviour
         direction2D = input.actions["Move"].ReadValue<Vector2>(); // Vector2D de movimiento
         // Move the character
         rb.velocity = new Vector2(direction2D.x * movementSpeed, rb.velocity.y);
+
+        if (bossDefeated)
+        {
+            BossDefeated();
+        }
+
     }
 
     void HandleJump()
@@ -224,12 +235,73 @@ public class Player : MonoBehaviour
         }
         door.velocity = new Vector2(0, 0); // Stop the door
         cameraMovement.following = false; // Stop the camera from following the player
-        cameraMovement.minX = 124; // Set the boundaries for the camera
-        cameraMovement.maxX = 124;
+        cameraMovement.transform.position = new Vector3(126, camera.transform.position.y, camera.transform.position.z); // Set the camera position
 
-        yield return new WaitForSeconds(3.0f);
         canSwitch = true;
         isCinematic = false;
+    }
+
+    public void BossDefeated()
+    {
+        transform.position = new Vector2(transform.position.x, -7);
+        rb.velocity = new Vector2(0, 0);
+        bossDefeated = true;
+        isCinematic = true;
+        canSwitch = false;
+        StartCoroutine(Cinematic2());
+    }
+
+    IEnumerator Cinematic2()
+    {
+        float cinematicSpeed = 5.0f; // Set the speed for the cinematic
+        float startTime = Time.time; // Record the start time
+        float duration = 1.7f; // Set the duration for the cinematic
+
+        Rigidbody2D exitDoor = GameObject.Find("ExitDoor").GetComponent<Rigidbody2D>();
+
+        while (Time.time < startTime + duration)
+        {
+            exitDoor.velocity = new Vector2(0, cinematicSpeed); // Move the door down
+            cameraMovement.size = cameraMovement.size -= 0.035f; // Zoom in the camera
+            yield return null; // Wait for the next frame
+        }
+        cameraMovement.minY = -6;
+        cameraMovement.maxX = 186;
+        cameraMovement.following = true; // Stop the camera from following the player
+        exitDoor.velocity = new Vector2(0, 0); // Stop the door
+
+        cinematicSpeed = 5.0f; // Set the speed for the cinematic
+        duration = 8.3f; // Set the duration for the cinematic
+        startTime = Time.time; // Record the start time
+
+        while (camera.transform.position.x < 185.0f)
+        {
+            rb.velocity = new Vector2(cinematicSpeed, rb.velocity.y); // Move the player to the right
+            yield return null; // Wait for the next frame
+        }
+
+        cameraMovement.following = false; // Stop the camera from following the player
+        while (rb.transform.position.x < 187.4)
+        {
+            rb.velocity = new Vector2(cinematicSpeed, rb.velocity.y); // Move the player to the right
+            yield return null; // Wait for the next frame
+        }
+        rb.velocity = new Vector2(0, rb.velocity.y); // Stop the player
+        yield return new WaitForSeconds(0.3f);
+        StartCoroutine(FadeOut(sprite, 1.5f));
+    }
+
+    IEnumerator FadeOut(SpriteRenderer sprite, float duration)
+    {
+        float rate = 1.0f / (duration * 60.0f);  // Assuming 60 frames per second
+        while (sprite.color.a > 0)
+        {
+            Color color = sprite.color;
+            color.a -= rate;
+            sprite.color = color;
+            yield return null;  // Wait for the next frame
+        }
+        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0);  // Ensure opacity is 0
     }
 
     IEnumerator Respawn() // Coroutine for the respawn
