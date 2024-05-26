@@ -26,11 +26,12 @@ public class Player : MonoBehaviour
     private Hook HookScript;
     private SpriteRenderer sprite;
     public GameObject HUDText;
+    public GameObject instructions;
     public GameObject pauseUI;
     public GameObject pauseButton;
     public GameObject end;
     private TextMeshProUGUI hudText;
-    public Animator animator;
+    private Animator animator;
 
     void Awake()
     {
@@ -426,6 +427,7 @@ public class Player : MonoBehaviour
 
     void ChangeEpoch(float epoch)
     {
+        instructions.SetActive(false);
         if (!canSwitch) { return; }
         // Deactivate all GameObjects
         prehistoric.SetActive(false);
