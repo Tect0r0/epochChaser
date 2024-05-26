@@ -52,9 +52,10 @@ public class enemyAI2D : MonoBehaviour
 
         if (enemyDetected)
         {
-            if (!EnemyManager.isDiscovered)
+            if (EnemyManager.heatCleared)
             {
-                EnemyManager.AlertOthers();
+                detectionLevel = 0;
+                enemyDetected = false;
             }
             //vector entre el objetivo y el enemigo
             direction = (target.position - transform.position).normalized;
@@ -75,6 +76,15 @@ public class enemyAI2D : MonoBehaviour
 
         else
         {
+            if (EnemyManager.isDiscovered)
+            {
+                detectionLevel = 20;
+            }
+            if (EnemyManager.heatCleared)
+            {
+                detectionLevel = 0;
+                enemyDetected = false;
+            }
             Patrol();
             CheckIfIsLookingAtTarget();
             CheckForEnemies(distance);
@@ -131,11 +141,7 @@ public class enemyAI2D : MonoBehaviour
     }
     void CheckForEnemies(float distance)
     {
-        if (EnemyManager.isDiscovered)
-        {
-            detectionLevel = 20;
-        }
-        
+
         if (detectionLevel <= 0)
         {
             detectionLevel = 0;
@@ -148,17 +154,20 @@ public class enemyAI2D : MonoBehaviour
 
         if (distance <= lookRadius)
         {
-            if (Time.time > detectionTime && !(detectionLevel >= 20) && isLookingAtPlayer)
+            if (Time.time > detectionTime && isLookingAtPlayer)
             {
                 detectionTime = Time.time + detectionDelay;
                 detectionLevel += 1;
-            }
-
-            if (detectionLevel >= 20)
-            {
-                detectionBar.gameObject.SetActive(false);
-                enemyDetected = true;
-                EnemyText.SetActive(true);
+                if (detectionLevel >= 20)
+                {
+                    detectionBar.gameObject.SetActive(false);
+                    enemyDetected = true;
+                    EnemyText.SetActive(true);
+                    if (!EnemyManager.isDiscovered)
+                    {
+                        EnemyManager.AlertOthers();
+                    }
+                }
             }
         }
 

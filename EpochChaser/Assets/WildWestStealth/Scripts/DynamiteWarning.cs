@@ -6,27 +6,35 @@ using static UnityEngine.GraphicsBuffer;
 public class DynamiteWarning : MonoBehaviour
 {
     public Transform target;
+    public float heightDifference = 14f;
     [SerializeField] GameObject projectilePrefab;
     [SerializeField] float projectileSpeed = 5f;
     [SerializeField] float dropCooldown = 2f;
     SpriteRenderer spriteRenderer;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
         float x = target.position.x;
-        transform.position = new Vector3(x, transform.position.y, 1);
+        float y = target.position.y + heightDifference;
+        transform.position = new Vector3(x, y, 1);
         if (EnemyManager.throwDynamite)
         {
             EnemyManager.throwDynamite = false;
             spriteRenderer.enabled = true;
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
             StartCoroutine(Warning());
         }
     }
@@ -45,5 +53,6 @@ public class DynamiteWarning : MonoBehaviour
         Rigidbody2D projectileRigidbody = projectile.GetComponent<Rigidbody2D>();
         projectileRigidbody.velocity = direction * projectileSpeed;
         spriteRenderer.enabled = false;
+        audioSource.Stop();
     }
 }
