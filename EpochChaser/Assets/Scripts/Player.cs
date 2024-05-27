@@ -63,12 +63,13 @@ public class Player : MonoBehaviour
             gHook = true;
         }
 
+        canSwitch = true;
+        dJump = true;
+        dash = true;
+        gHook = true;
+
         if (sceneName == "Futuristic") // Check for scene (only for last scene)
         {
-            canSwitch = true;
-            dJump = true;
-            dash = true;
-            gHook = true;
             Debug.Log("Futuristic scene");
             // Find the GameObjects
             prehistoric = GameObject.Find("Prehistoric");
@@ -279,6 +280,7 @@ public class Player : MonoBehaviour
         canSwitch = true;
         isCinematic = false;
         HUDText.SetActive(true);
+        bossDefeated = true;
     }
 
     public void BossDefeated()

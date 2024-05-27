@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class FinalBoss : MonoBehaviour
@@ -78,6 +79,7 @@ public class FinalBoss : MonoBehaviour
         audioSource.Play();
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
+        SceneManager.LoadScene("Futuristic");
     }
 
     void SpawnTarget()

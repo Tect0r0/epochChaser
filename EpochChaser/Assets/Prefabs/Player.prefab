@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8133928880232363322}
   - component: {fileID: 1015501975911304719}
   - component: {fileID: 5967857395470998123}
+  - component: {fileID: 6095846477872216662}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -77,12 +78,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+  m_Sprite: {fileID: 883339373, guid: 9f0fe17c8be36314c81e368d7d70728a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1.28, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -120,8 +121,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: 0, y: 0.13362145}
+  m_Size: {x: 1, y: 1.6579175}
   m_Direction: 0
 --- !u!50 &8133928880232363322
 Rigidbody2D:
@@ -179,7 +180,7 @@ MonoBehaviour:
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: 1
-  m_Camera: {fileID: 3074706769933259217, guid: d5d3ec853638d134891b2d986de910ef, type: 3}
+  m_Camera: {fileID: 0}
 --- !u!114 &5967857395470998123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,8 +193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852b6c14a172d1c46a070f02b1549807, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 3074706769933259217, guid: d5d3ec853638d134891b2d986de910ef, type: 3}
-  playerSpawner: {fileID: 7509459999871903331, guid: 659ebaf2e88b7c84cb5e462b75e3cd99, type: 3}
+  camera: {fileID: 0}
+  playerSpawner: {fileID: 0}
   movementSpeed: 0
   jumpForce: 0
   dashSpeed: 0
@@ -206,6 +207,7 @@ MonoBehaviour:
   canDoubleJump: 0
   canDash: 0
   canSwitch: 0
+  canHook: 0
   dJump: 0
   wJump: 0
   gHook: 0
@@ -214,3 +216,29 @@ MonoBehaviour:
   distance: 0
   HookPrefab: {fileID: 1539288646734497173, guid: c02a5173482e2e84d844ca5be8629ea8, type: 3}
   ForceDistnace: 0
+  HUDText: {fileID: 0}
+  instructions: {fileID: 0}
+  pauseUI: {fileID: 0}
+  pauseButton: {fileID: 0}
+  end: {fileID: 0}
+--- !u!95 &6095846477872216662
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4473489398713036622}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 61376298b4c2a8846a394c6210caf56c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

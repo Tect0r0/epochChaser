@@ -5,7 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ZZZSampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/WildWest.unity
+    guid: 8064a4404a6bc4e459835aa45369a902
+  - enabled: 1
+    path: Assets/Scenes/Futuristic.unity
+    guid: c314b252c8ba49a43bcbe0993008aca0
   m_configObjects: {}
